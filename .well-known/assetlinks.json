@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "de.stagepulse.mitarbeiter",
+        "sha256_cert_fingerprints": ["14:57:39:5B:03:A3:AC:B2:E9:E1:54:5C:9C:94:9B:C9:5A:6A:23:72:D9:6D:06:DF:CC:65:87:90:88:30:07:70"]
+      }
+    }]
