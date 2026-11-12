@@ -1,0 +1,51 @@
+{
+ "name": "StagePulse Mitarbeiter",
+ "short_name": "StagePulse",
+ "description": "Aufträge, Events und Fotos von StagePulse Events – nur für Mitarbeiter",
+ "lang": "de",
+ "start_url": "app.html",
+ "scope": "./",
+ "display": "standalone",
+ "orientation": "portrait",
+ "background_color": "#121212",
+ "theme_color": "#121212",
+ "icons": [
+  {
+   "src": "assets/icon-192.png",
+   "sizes": "192x192",
+   "type": "image/png",
+   "purpose": "any"
+  },
+  {
+   "src": "assets/icon-512.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "any"
+  },
+  {
+   "src": "assets/icon-maskable-512.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "maskable"
+  }
+ ],
+ "id": "app.html",
+ "categories": [
+  "business",
+  "productivity"
+ ],
+ "shortcuts": [
+  {
+   "name": "Aufträge",
+   "url": "app.html#auftraege"
+  },
+  {
+   "name": "Events eintragen",
+   "url": "app.html#events"
+  },
+  {
+   "name": "Fotos verwalten",
+   "url": "app.html#bilder"
+  }
+ ]
+}

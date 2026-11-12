@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#121212"><meta name="robots" content="noindex,nofollow">
+<title>StagePulse Mitarbeiter</title>
+<link rel="manifest" href="app.webmanifest"><link rel="icon" href="assets/icon-192.png" type="image/png"><link rel="apple-touch-icon" href="assets/icon-192.png">
+<link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="admin.css">
+<style>
+.app-body{min-height:100vh}
+.app-head{position:sticky;top:0;z-index:10;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:calc(10px + env(safe-area-inset-top)) 16px 10px;background:#121212f2;border-bottom:1px solid var(--line)}
+.app-wrap{max-width:720px;margin:0 auto;padding:16px 16px calc(96px + env(safe-area-inset-bottom))}.app-wrap h1{font-size:2rem;margin:6px 0 4px}
+.app-tools{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}.app-tools .button{padding:9px 16px;font-size:.9rem}
+.app-list{display:grid;gap:12px;margin-top:16px}
+.app-card{display:block;width:100%;text-align:left;background:var(--bg2);border:1px solid var(--line);border-radius:16px;padding:16px;color:inherit;cursor:pointer;font:inherit}
+.app-card.fresh{border-color:var(--ac);box-shadow:0 0 0 2px #F28C1B55}.app-card:focus-visible{outline:3px solid var(--ac)}
+.app-card-top{display:flex;justify-content:space-between;align-items:center;gap:10px}.app-card strong{font-size:1.1rem}.app-card p{margin:6px 0 0;color:var(--muted);font-size:.9rem}.app-card .when{font-size:.78rem;opacity:.8}
+.app-empty{padding:30px 16px;text-align:center;color:var(--muted);border:1px dashed #555;border-radius:14px}
+.tabbar{position:fixed;left:0;right:0;bottom:0;z-index:20;display:grid;grid-template-columns:repeat(3,1fr);background:#161616;border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
+.tabbar button{background:none;border:0;color:var(--muted);padding:14px 6px;font:700 .85rem var(--font);cursor:pointer;border-top:3px solid transparent}
+.tabbar button[aria-current=true]{color:var(--ac);border-top-color:var(--ac)}
+dialog.sheet{background:var(--bg2);color:var(--text);border:1px solid var(--line);border-radius:18px;width:min(560px,94vw);max-height:92vh;padding:0;overflow:auto}
+dialog.sheet::backdrop{background:#000c}.detail-inner{padding:22px}.detail-inner h2{margin:4px 0 12px}.detail-grid{display:grid;gap:10px;margin:14px 0}
+.detail-actions-app{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}.dclose{float:right;background:none;border:0;color:#fff;font-size:1.8rem;cursor:pointer;line-height:1}
+.status-box{margin-top:18px;padding-top:16px;border-top:1px solid var(--line);display:grid;gap:10px}.status-box label{display:grid;gap:6px;color:var(--muted);font-size:.9rem}
+.app-wrap .event-row{margin-top:12px}.app-wrap .request-row{display:grid;gap:10px}
+</style>
+<script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script defer src="config.js"></script><script defer src="push.js"></script><script defer src="auftraege.js"></script>
+</head><body class="admin-body app-body">
+<header class="app-head"><img class="brand-logo" src="assets/logo-wortmarke.webp" alt="StagePulse Events" width="326" height="36"><button id="logout" class="button button-ghost" hidden style="padding:8px 14px;font-size:.85rem">Abmelden</button></header>
+<main class="app-wrap">
+<section id="login-panel" class="login-panel"><div class="section-kicker">NUR FÜR MITARBEITER</div><h1>Anmelden<span>.</span></h1><p>Melde dich mit deinen Zugangsdaten an (dieselben wie im Mitarbeiterbereich der Website).</p>
+<form id="login-form"><label>E-Mail-Adresse<input type="email" name="email" required autocomplete="email"></label><label>Passwort<input type="password" name="password" required autocomplete="current-password"></label><button class="button button-primary" type="submit">Anmelden ↗</button><p id="login-error" class="admin-error" role="alert"></p></form></section>
+<section id="app-main" hidden>
+<p id="user-label" class="form-hint"></p><p id="app-error" class="admin-error" role="alert"></p><p id="app-info" class="admin-ok" role="status"></p>
+
+<div id="tab-auftraege"><div class="section-kicker">STAGEPULSE</div><h1>Aufträge<span>.</span></h1>
+<div class="app-tools"><button id="sound-toggle" class="button button-ghost" type="button">Ton: aus</button><button id="push-toggle" class="button button-ghost" type="button">Benachrichtigung aktivieren</button><button id="push-test" class="button button-ghost" type="button" hidden>Test senden</button><button id="reload" class="button button-ghost" type="button" aria-label="Aktualisieren">↻</button></div>
+<p id="notify-msg" class="form-hint" role="status"></p><div id="list" class="app-list" aria-live="polite"></div></div>
+
+<div id="tab-events" hidden><div class="section-kicker">ÖFFENTLICHE EVENTS</div><h1>Events<span>.</span></h1><p class="form-hint">Erscheinen automatisch auf der Website unter „Nächste Events“.</p>
+<div class="app-tools"><button id="ev-new" class="button button-primary" type="button">+ Neues Event</button></div><div id="ev-list"></div></div>
+
+<div id="tab-bilder" hidden><div class="section-kicker">WEBSITE-BILDER</div><h1>Momente<span>.</span></h1><p class="form-hint">Die 6 Bildplätze unter „Gute Events bleiben hängen“. Foto aufnehmen oder aus der Galerie wählen, optional mit Bildtext.</p><p id="moment-error" class="admin-error" role="alert"></p><div id="moment-grid" class="moment-admin"></div></div>
+</section></main>
+<nav id="tabbar" class="tabbar" aria-label="Bereiche" hidden><button id="nav-auftraege" type="button" aria-current="true">Aufträge</button><button id="nav-events" type="button" aria-current="false">Events</button><button id="nav-bilder" type="button" aria-current="false">Bilder</button></nav>
+
+<dialog id="detail" class="sheet" aria-labelledby="d-name"><div class="detail-inner"><button class="dclose" id="d-close" aria-label="Schließen">×</button><div class="section-kicker">AUFTRAG</div><h2 id="d-name"></h2><div id="d-body" class="detail-grid"></div><div id="d-actions" class="detail-actions-app"></div>
+<div class="status-box"><label>Status ändern<select id="d-status"></select></label><button id="d-save" class="button button-primary" type="button">Status speichern</button><p class="form-hint" style="margin:0">Bei „Angenommen“ erhält der Kunde einmalig eine Bestätigungs-E-Mail.</p><p id="d-error" class="admin-error" role="alert"></p></div></div></dialog>
+
+<dialog id="ev-dialog" class="sheet" aria-labelledby="ev-title"><form id="ev-form" class="detail-inner"><button class="dclose" id="ev-close" type="button" aria-label="Schließen">×</button><div class="section-kicker">EVENT</div><h2 id="ev-title">Neues Event</h2>
+<div class="form-grid"><label class="span-two">Titel<input name="title" required maxlength="120" placeholder="z. B. Stadtfest Ratekau"></label><label>Datum<input name="event_date" type="date" required></label><label>Uhrzeit<input name="start_time" type="time"></label><label class="span-two">Adresse / Standort (für Google Maps)<input name="location" required maxlength="160" placeholder="z. B. Marktplatz 1, 23626 Ratekau"></label><label class="span-two">Beschreibung<textarea name="description" rows="3" maxlength="600"></textarea></label><label class="span-two">Link (optional, mit https://)<input name="link_url" type="url" placeholder="https://..."></label></div>
+<label class="consent"><input type="checkbox" name="published" checked><span>Auf der Website veröffentlichen</span></label>
+<div class="form-actions"><button class="button button-primary" id="ev-save" type="submit">Event speichern</button></div><p id="ev-error" class="admin-error" role="alert"></p></form></dialog>
+</body></html>
